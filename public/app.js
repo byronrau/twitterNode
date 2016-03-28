@@ -3,7 +3,7 @@ var app = angular.module('nodeTwitter', ['ui.router', 'ngSanitize', 'ngCsv']);
 app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('app', {
-      url: '/app',
+      url: '/',
       templateUrl: 'app.html',
       controller: 'ntCtrl'
     })
