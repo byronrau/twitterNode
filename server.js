@@ -11,6 +11,8 @@ var client = new Twitter({
   access_token_secret: 'OFfyQO9svROI3clM8nG3jdZfa5XGs01JW9V39QlsRWyxe'
 });
 
+app.set('port', (process.env.PORT || 9000));
+
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
@@ -33,4 +35,6 @@ app.post('/search', function(req, res) {
   });
 });
 
-app.listen('9000');
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
+});
