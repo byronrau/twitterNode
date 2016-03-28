@@ -4,7 +4,7 @@
     <input type="text" class="form-control" placeholder="maxId (optional)" ng-model="max_id">
   </div>
   <button type="submit" class="btn btn-default" ng-click=search()>Submit</button>
-  <button type="button" class="btn btn-default" csv-header="['Created', 'Id', 'user', 'text', 'favorite_count', 'favorited', 'retweet_count', 'retweeted']" ng-csv="results" filename="test.csv">Export</button>
+  <button type="button" class="btn btn-default" csv-header="['Created', 'Id', 'text', 'user', 'favorite_count', 'favorited', 'retweet_count', 'retweeted']" ng-csv="results" filename="test.csv">Export</button>
 </form>
   <table class="table table-striped">
     <thead>
