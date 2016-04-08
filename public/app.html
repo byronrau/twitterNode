@@ -1,10 +1,13 @@
+<h5>This form uses Twitter's GET statuses/user_time API function to get a collection of the most recent Tweets posted by the user indicated by ther screen_name or user_id.  This method can only return up to 3,200 of a user’s most recent Tweets. Native retweets of other statuses by the user is included in this total, regardless of whether include_rts is set to false when requesting this resource.<a href="https://dev.twitter.com/rest/reference/get/statuses/user_timeline" target="_blank">  For more detail see here.</a></h5>
+
 <form class="navbar-form navbar-left" role="search">
   <div class="form-group">
-    <input type="text" class="form-control" placeholder="User" ng-model="searchTerm">
-    <input type="text" class="form-control" placeholder="maxId (optional)" ng-model="max_id">
+    <input type="text" class="form-control" placeholder="User's Twitter Handle" ng-model="searchTerm">
+    <!-- <input type="text" class="form-control" placeholder="maxId (optional)" ng-model="max_id"> -->
   </div>
   <button type="submit" class="btn btn-default" ng-click=search()>Submit</button>
   <button type="button" class="btn btn-default" csv-header="['Created', 'Id', 'text', 'user', 'favorite_count', 'favorited', 'retweet_count', 'retweeted']" ng-csv="results" filename="test.csv">Export</button>
+  <br><img id="mySpinner" src="spinner.gif" ng-show="loading" />
 </form>
   <table class="table table-striped">
     <thead>

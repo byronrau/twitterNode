@@ -3,6 +3,7 @@ var app = express();
 var bodyParser = require('body-parser');
 // var fs = require('fs');
 var Twitter = require('twitter');
+var async = require('async');
 
 var client = new Twitter({
   consumer_key: 'dPLhneMsOJ7ZTG1mVN4IsJfnq',
@@ -18,21 +19,51 @@ app.use(bodyParser.json());
 
 
 app.post('/search', function(req, res) {
-  //get term
-  // console.log(req.body);
+  var tweetsArr = [];
+  var count = 0;
+
   var params = {
     screen_name: req.body.searchTerm,
-    count: 200,
-    max_id: req.body.max_id
+    count: 200
   };
-  client.get('statuses/user_timeline', params, function(error, tweets, response){
-  if (!error) {
-    // console.log(tweets);
-    res.send(tweets);
-  } else{
-    res.send(error);
+
+  var nextTweets = function(params) {
+    console.log('count', count, 'max_id', params.max_id);
+    if(count === 16) {
+      res.send(tweetsArr);
+      return;
+    }
+    client.get('statuses/user_timeline', params, function(error, tweets, response){
+    if (!error) {
+      if(tweets.length > 0 && tweets[tweets.length-1].hasOwnProperty('id')){
+        params.max_id = tweets[tweets.length-1].id;
+      } else {
+        console.log('max id not updated');
+        params.max_id = params.max_id;
+      }
+      tweetsArr = tweetsArr.concat(tweets);
+      count++;
+      nextTweets(params);
+    } else{
+      console.log('error')
+      res.send(error);
+    }
+    });
   }
-  });
+
+  var getTweets = function() {
+    client.get('statuses/user_timeline', params, function(error, tweets, response){
+    if (!error) {
+      params.max_id = tweets[tweets.length-1].id;
+      tweetsArr = tweetsArr.concat(tweets);
+      nextTweets(params);
+    } else{
+      console.log('error')
+      res.send(error);
+    }
+    });
+  }
+  getTweets();
 });
 
 app.listen(app.get('port'), function() {

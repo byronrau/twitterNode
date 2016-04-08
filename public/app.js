@@ -15,11 +15,13 @@ app.controller('ntCtrl', ['$scope', '$http', function($scope, $http) {
   $scope.results = [];
   $scope.search = function() {
     console.log($scope.searchTerm)
+    $scope.loading = true;
     $http.post('/search', {
       'searchTerm': $scope.searchTerm,
       'max_id': $scope.max_id
     }).then(function(resp) {
       console.log(resp.data);
+      $scope.loading = false;
       var tempArr = [];
       resp.data.forEach(function(currItem){
         var extract = {};
@@ -34,6 +36,9 @@ app.controller('ntCtrl', ['$scope', '$http', function($scope, $http) {
         tempArr.push(extract);
       });
       $scope.results = $scope.results.concat(tempArr);
+    }, function(err){
+      alert('Error getting data, please try again.')
+      $scope.loading = false;
     });
   }
   $scope.download = function(){
