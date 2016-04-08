@@ -13,7 +13,9 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
 app.controller('ntCtrl', ['$scope', '$http', function($scope, $http) {
   $scope.results = [];
+  $scope.loading = false;
   $scope.search = function() {
+
     console.log($scope.searchTerm)
     $scope.loading = true;
     $http.post('/search', {
