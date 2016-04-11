@@ -1,9 +1,7 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
-// var fs = require('fs');
 var Twitter = require('twitter');
-var async = require('async');
 
 var client = new Twitter({
   consumer_key: 'dPLhneMsOJ7ZTG1mVN4IsJfnq',
@@ -17,6 +15,38 @@ app.set('port', (process.env.PORT || 9000));
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 
+app.post('/signin', function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
+  var hash;
+
+  User.findOne({username: username}, function(err, user) {
+    if (err) {
+      console.log('user not found');
+      return err;
+    } else {
+      hash = user.password;
+      utils.comparePassword(password, hash, function(matched) {
+        if (matched) {
+          res.status(200).send('passwords match');
+        } else {
+          res.status(403).send('password not match');
+        }
+      });
+    }
+  });
+});
+
+app.post('/signup', function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
+  utils.hashPassword(password, function(hash) {
+    User.create({ username: username, password: hash }, function (err, user) {
+      if (err) throw err;
+      res.status(201).send('created');
+    });
+  });
+});
 
 app.post('/search', function(req, res) {
   var tweetsArr = [];
@@ -46,7 +76,7 @@ app.post('/search', function(req, res) {
       nextTweets(params);
     } else{
       console.log('error')
-      res.send(error);
+      res.status(404).send(error);
     }
     });
   }
@@ -59,7 +89,7 @@ app.post('/search', function(req, res) {
       nextTweets(params);
     } else{
       console.log('error')
-      res.send(error);
+      res.status(404).send(error);
     }
     });
   }

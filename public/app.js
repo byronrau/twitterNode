@@ -14,6 +14,8 @@ app.config(function($stateProvider, $urlRouterProvider) {
 app.controller('ntCtrl', ['$scope', '$http', function($scope, $http) {
   $scope.results = [];
   $scope.loading = false;
+  $scope.sortType = '';
+  $scope.sortReverse = false;
   $scope.search = function() {
 
     console.log($scope.searchTerm)
@@ -27,7 +29,7 @@ app.controller('ntCtrl', ['$scope', '$http', function($scope, $http) {
       var tempArr = [];
       resp.data.forEach(function(currItem){
         var extract = {};
-        extract.created_at = currItem.created_at;
+        extract.created_at = new Date(currItem.created_at);
         extract.id = currItem.id;
         extract.text = currItem.text;
         extract.username = currItem.user.screen_name;

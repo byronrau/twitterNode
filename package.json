@@ -12,8 +12,11 @@
   "dependencies": {
     "angular-ui-router": "^0.2.18",
     "async": "^1.5.2",
+    "bcrypt": "^0.8.5",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.15.0",
     "express": "^4.13.4",
+    "mongoose": "^4.4.12",
     "twitter": "^1.2.5"
   }
 }
