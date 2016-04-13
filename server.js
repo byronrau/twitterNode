@@ -8,7 +8,7 @@ var User = require('./userModel.js');
 var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
-var keys = require('./config.js');
+// var keys = require('./config.js');
 
 var client = new Twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY || keys.TWITTER_CONSUMER_KEY,
