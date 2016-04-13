@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var passportLocalMongoose = require('passport-local-mongoose');
 
-mongoose.connect(process.env.MONGOLAB_URI || 'mongodb://localhost/twitterNode');
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/twitterNode');
 
 var UserSchema = new mongoose.Schema({
   username: {
