@@ -1,0 +1,15 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/#/signin">
+        <img src="twitter.png">
+      </a>
+    </div>
+  </div>
+</nav>
+<div class="login-container" layout="column" layout-align="center center">
+  <h1>Please Login</h1>
+    <input class="username-input" type="text" ng-model="username" placeholder="username"><br>
+    <input class="password-input" type="password" ng-model="password" placeholder="password"><br>
+  <button class="btn btn-lg btn-primary btn-block" ng-click=signIn()>Login</button>
+</div>

@@ -1,0 +1,51 @@
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/#/signin">
+        <img src="twitter.png">
+      </a>
+      <a class="navbar-text" href="#/">
+        Timeline
+      </a>
+      <a class="navbar-text" href="#/search">
+        Search
+      </a>
+      <a class="navbar-text" href="#/stream">
+        Stream
+      </a>
+      <a class="navbar-text" href="#/usershow">
+        User
+      </a>
+    </div>
+  </div>
+</nav>
+<h3>User Show API</h3>
+
+<h5>This form uses Twitter's User Show API. Enter the user screen_name and it will return details about the user.<a href="https://dev.twitter.com/streaming/overview" target="_blank">  For more detail see here.</a></h5>
+
+<div class="form-container">
+<form class="navbar-form" role="search">
+  <div class="form-group">
+    <input type="text" class="form-control" placeholder="screen_name" ng-model="screen_name" autocomplete="on">
+  </div>
+  <button type="submit" class="btn btn-default" ng-click=userShow() ng-disabled="loading">
+  <span ng-hide="loading">Submit</span>
+  <span ng-show="loading"><i class="fa fa-spinner fa-spin"></i> Getting User...</span>
+  </button>
+  <!-- <button type="button" class="btn btn-default" csv-header="['Created', 'Id', 'text', 'user', 'favorite_count', 'favorited', 'retweet_count', 'retweeted']" ng-csv="results" filename="test.csv">Export</button> -->
+</form>
+</div>
+<div class="tweets-container">
+  <table class="table table-striped">
+    <thead>
+      <td>Field</td>
+      <td>Attribute</td>
+    </thead>
+    <tbody>
+      <tr ng-repeat="(key, value) in user">
+        <td>{{key}}</td>
+        <td>{{value}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

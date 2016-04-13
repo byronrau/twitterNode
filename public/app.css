@@ -6,3 +6,32 @@
 .form-container {
   margin-top: 20px;
 }
+.login-container {
+  width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+.login-container input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 16px !important;
+}
+.login-container .username-input {
+  margin-bottom: -1px !important;
+  border: 1px solid #ccc !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+.login-container .password-input {
+  margin-bottom: 20px !important;
+  border: 1px solid #ccc !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+nav img {
+  width: 25px;
+}
+thead {
+  font-weight: bold;
+}

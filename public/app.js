@@ -1,14 +1,52 @@
-var app = angular.module('nodeTwitter', ['ui.router', 'ngSanitize', 'ngCsv']);
+var app = angular.module('nodeTwitter', ['ui.router', 'ngSanitize', 'ngCsv', 'app.users', 'app.services', 'app.search', 'app.stream','app.userShow']);
 
 app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
+    .state('signin', {
+      url: '/signin',
+      templateUrl: 'signin.html',
+      controller: 'UserController'
+    })
+    .state('signup', {
+      url: '/signup',
+      templateUrl: 'signup.html',
+      controller: 'UserController'
+    })
     .state('app', {
       url: '/',
       templateUrl: 'app.html',
-      controller: 'ntCtrl'
+      controller: 'ntCtrl',
+      authenticate: true
     })
-
+    .state('search', {
+      url: '/search',
+      templateUrl: 'search.html',
+      controller: 'searchCtrl',
+      authenticate: true
+    })
+    .state('stream', {
+      url: '/stream',
+      templateUrl: 'stream.html',
+      controller: 'streamCtrl',
+      authenticate: true
+    })
+    .state('usershow', {
+      url: '/usershow',
+      templateUrl: 'userShow.html',
+      controller: 'userShowCtrl',
+      authenticate: true
+    })
   $urlRouterProvider.otherwise('/');
+});
+
+app.run(function ($rootScope, $state, Auth) {
+  $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams){
+    if (toState.authenticate && !Auth.checkLoggedIn()){
+      // User isn’t authenticated
+      $state.transitionTo("signin");
+      event.preventDefault();
+    }
+  });
 });
 
 app.controller('ntCtrl', ['$scope', '$http', function($scope, $http) {
@@ -16,15 +54,12 @@ app.controller('ntCtrl', ['$scope', '$http', function($scope, $http) {
   $scope.loading = false;
   $scope.sortType = '';
   $scope.sortReverse = false;
-  $scope.search = function() {
-
-    console.log($scope.searchTerm)
+  $scope.timeline = function() {
     $scope.loading = true;
-    $http.post('/search', {
+    $http.post('/timeline', {
       'searchTerm': $scope.searchTerm,
       'max_id': $scope.max_id
     }).then(function(resp) {
-      console.log(resp.data);
       $scope.loading = false;
       var tempArr = [];
       resp.data.forEach(function(currItem){
@@ -45,7 +80,5 @@ app.controller('ntCtrl', ['$scope', '$http', function($scope, $http) {
       $scope.loading = false;
     });
   }
-  $scope.download = function(){
 
-  }
 }]);
