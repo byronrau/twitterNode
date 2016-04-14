@@ -5,11 +5,11 @@ A web application that implements common Twitter API functions such as Timeline 
 ![ScreenShot](/docs/screen1.png)
 
 #Technologies
-Twitter API
-AngularJS
-Socket.io
-Node/Express
-MongoDB
+*Twitter API
+*AngularJS
+*Socket.io
+*Node/Express
+*MongoDB
 
 #Styling
 Styling was done using Bootstrap.
