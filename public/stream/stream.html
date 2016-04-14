@@ -2,7 +2,7 @@
   <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="/#/signin">
-        <img src="twitter.png">
+        <img src="/img/twitter.png">
       </a>
       <a class="navbar-text" href="#/">
         Timeline
@@ -19,18 +19,16 @@
     </div>
   </div>
 </nav>
-<h3>Search API</h3>
+<h3>Stream API</h3>
 
-<h5>This form uses Twitter's Search API. The Twitter Search API is part of Twitter’s REST API. It allows queries against the indices of recent or popular Tweets and behaves similarly to, but not exactly like the Search feature available in Twitter mobile or web clients, such as Twitter.com search. The Twitter Search API searches against a sampling of recent Tweets published in the past 7 days. <a href="https://dev.twitter.com/rest/public/search" target="_blank">  For more detail see here.</a></h5>
-<h5>By default it will return up to 1000 tweets.  To gather more, use the last tweet's id as the maxId so the search can continue from there.</h5>
+<h5>This form uses Twitter's Stream API. Enter the stream term and it will begin to stream tweets<a href="https://dev.twitter.com/streaming/overview" target="_blank">  For more detail see here.</a></h5>
 
 <div class="form-container">
 <form class="navbar-form" role="search">
   <div class="form-group">
-    <input type="text" class="form-control" placeholder="search term" ng-model="searchTerm" autocomplete="on">
-    <input type="text" class="form-control" placeholder="maxId (optional)" ng-model="maxId" autocomplete="on">
+    <input type="text" class="form-control" placeholder="stream term" ng-model="searchTerm" autocomplete="on">
   </div>
-  <button type="submit" class="btn btn-default" ng-click=search() ng-disabled="loading">
+  <button type="submit" class="btn btn-default" ng-click=stream() ng-disabled="loading">
   <span ng-hide="loading">Submit</span>
   <span ng-show="loading"><i class="fa fa-spinner fa-spin"></i> Getting Tweets...</span>
   </button>

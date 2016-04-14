@@ -4,35 +4,35 @@ app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
     .state('signin', {
       url: '/signin',
-      templateUrl: 'signin.html',
+      templateUrl: '/user/signin.html',
       controller: 'UserController'
     })
     .state('signup', {
       url: '/signup',
-      templateUrl: 'signup.html',
+      templateUrl: '/user/signup.html',
       controller: 'UserController'
     })
     .state('app', {
       url: '/',
-      templateUrl: 'app.html',
+      templateUrl: '/app/app.html',
       controller: 'ntCtrl',
       authenticate: true
     })
     .state('search', {
       url: '/search',
-      templateUrl: 'search.html',
+      templateUrl: '/search/search.html',
       controller: 'searchCtrl',
       authenticate: true
     })
     .state('stream', {
       url: '/stream',
-      templateUrl: 'stream.html',
+      templateUrl: '/stream/stream.html',
       controller: 'streamCtrl',
       authenticate: true
     })
     .state('usershow', {
       url: '/usershow',
-      templateUrl: 'userShow.html',
+      templateUrl: '/userShow/userShow.html',
       controller: 'userShowCtrl',
       authenticate: true
     })
