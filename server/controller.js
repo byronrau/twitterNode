@@ -1,7 +1,7 @@
 var Twitter = require('twitter');
 //remove for production
 var keys = require('./config.js');
-// var app = require('./server.js');
+var sentiment = require('sentiment');
 
 var client = new Twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY || keys.TWITTER_CONSUMER_KEY,
@@ -76,6 +76,9 @@ module.exports = {
     var nextTweets = function(params) {
       console.log('count', count, 'max_id', params.max_id);
       if(count === 9) {
+        tweetsArr.forEach(function(tweet){
+          tweet.sentiment = sentiment(tweet.text);
+        });
         res.send(tweetsArr);
         return;
       }

@@ -25,6 +25,7 @@ angular.module('app.search', [])
         extract.favorited = tweet.favorited;
         extract.retweet_count = tweet.retweet_count;
         extract.retweeted = tweet.retweeted;
+        extract.sentiment = tweet.sentiment.score;
         tempArr.push(extract);
       });
       $scope.results = $scope.results.concat(tempArr);
