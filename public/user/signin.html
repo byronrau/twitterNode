@@ -9,7 +9,9 @@
 </nav>
 <div class="login-container" layout="column" layout-align="center center">
   <h1>Please Login</h1>
+  <form ng-submit=signIn()>
     <input class="username-input" type="text" ng-model="username" placeholder="username"><br>
     <input class="password-input" type="password" ng-model="password" placeholder="password"><br>
-  <button class="btn btn-lg btn-primary btn-block" ng-click=signIn()>Login</button>
+    <button class="btn btn-lg btn-primary btn-block" ng-click=signIn()>Login</button>
+  </form>
 </div>
