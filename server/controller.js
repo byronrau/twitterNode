@@ -1,6 +1,6 @@
 var Twitter = require('twitter');
 //remove for production
-// var keys = require('./config.js');
+var keys = require('./config.js');
 var sentiment = require('sentiment');
 
 var client = new Twitter({
@@ -11,6 +11,9 @@ var client = new Twitter({
 });
 
 var prevStream;
+
+var graph = require('fbgraph');
+
 
 module.exports = {
   timeline: function(req, res) {
@@ -170,5 +173,70 @@ module.exports = {
         }, 5000);
       });
     }
+  },
+
+  fb: function(req, res) {
+    var posts = [];
+    var count = 0;
+
+    var pageURL = req.body.fbPage.split('/').slice(-1)[0];
+    // console.log('/'+ pageURL + '/posts');
+
+    var getPosts = function(err, res, resolve) {
+      count++
+      if(res.paging && res.paging.previous && count<2) {
+        // console.log('calling me', res.paging.previous)
+        graph.get(res.paging.next, function(err, res){
+          // console.log('inside recursive grah.get', res);
+          if(err) {
+            console.log('err', err);
+          } else {
+            posts = posts.concat(res.data);
+            console.log('total posts', posts.length);
+            // console.log('paging inside recursive graph',res);
+            getPosts(err, res, resolve);
+          }
+        })
+      } else {
+        // console.log('exiting', count);
+        resolve(posts);
+        return;
+      }
+    }
+
+    var getComments = function(post) {
+      return new Promise(function(resolve, reject){
+        graph.get(post.id + '/comments?limit=500', function(err, res){
+          if(err) {
+            console.log('err getting comments')
+            reject(err);
+          } else {
+            console.log('sending comments ', res.data.length);
+            post.comments = res.data;
+            resolve(post);
+          }
+        });
+      })
+    }
+
+    var p1 = new Promise(function(resolve, reject) {
+      graph.get('/' + pageURL + '/posts', function(err, res) {
+        // console.log(res);
+        // res.send('OK');
+        posts = posts.concat(res.data);
+        // console.log(posts.length);
+        getPosts(err, res, resolve);
+      });
+    }).then(function(posts) {
+      // console.log('is this happnening?', posts)
+      var promiseArr = [];
+      posts.forEach(function(currPost){
+        promiseArr.push(getComments(currPost));
+      });
+      console.log('promiseArr', promiseArr);
+      Promise.all(promiseArr).then(function(values){
+        res.send(posts);
+      });
+    })
   }
 }

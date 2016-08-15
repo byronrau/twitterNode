@@ -1,4 +1,4 @@
-var app = angular.module('nodeTwitter', ['ui.router', 'ngSanitize', 'ngCsv', 'app.users', 'app.services', 'app.search', 'app.stream','app.userShow']);
+var app = angular.module('nodeTwitter', ['ui.router', 'ngSanitize', 'ngCsv', 'app.users', 'app.services', 'app.search', 'app.stream','app.userShow', 'app.fb']);
 
 app.config(function($stateProvider, $urlRouterProvider) {
   $stateProvider
@@ -35,6 +35,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: '/userShow/userShow.html',
       controller: 'userShowCtrl',
       authenticate: true
+    })
+    .state('facebook', {
+      url: '/facebook',
+      templateUrl: '/facebook/facebook.html',
+      controller: 'fbCtrl'
+      // authenticate: true
     })
   $urlRouterProvider.otherwise('/');
 });
