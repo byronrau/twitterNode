@@ -75,7 +75,7 @@ module.exports =  function(app, express, io) {
     }, function (err, facebookRes) {
       console.log('facebookRes!', facebookRes);
       req.isAuthenticated();
-      console.log('req',req);
+      console.log('graphObj', graph);
       res.redirect('/#/facebook');
     });
   });

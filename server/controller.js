@@ -219,6 +219,8 @@ module.exports = {
       })
     }
 
+    console.log('graph in controller', graph);
+
     var p1 = new Promise(function(resolve, reject) {
       graph.get('/' + pageURL + '/posts', function(err, res) {
         if (err) {
