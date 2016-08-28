@@ -223,7 +223,8 @@ module.exports = {
       graph.get('/' + pageURL + '/posts', function(err, res) {
         if (err) {
           console.log('Error getting initial posts', err)
-          res.status(500).send(err)
+          // res.status(500).send(err)
+          reject(err);
         } else {
           // console.log(res);
           // res.send('OK');
@@ -242,6 +243,8 @@ module.exports = {
       Promise.all(promiseArr).then(function(values){
         res.send(posts);
       });
+    }).catch(function(err){
+      res.status(500).send(err);
     })
   }
 }
