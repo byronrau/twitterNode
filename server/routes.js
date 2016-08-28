@@ -80,5 +80,7 @@ module.exports =  function(app, express, io) {
     });
   });
 
-  app.post('/fb', controller.fb);
+  app.post('/fb', function(req,res,next){
+    controller.fb(req,res, graph);
+  });
 }
