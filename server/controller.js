@@ -221,11 +221,16 @@ module.exports = {
 
     var p1 = new Promise(function(resolve, reject) {
       graph.get('/' + pageURL + '/posts', function(err, res) {
-        // console.log(res);
-        // res.send('OK');
-        posts = posts.concat(res.data);
-        // console.log(posts.length);
-        getPosts(err, res, resolve);
+        if (err) {
+          console.log('Error getting initial posts', err)
+          res.status(500).send(err)
+        } else {
+          // console.log(res);
+          // res.send('OK');
+          posts = posts.concat(res.data);
+          // console.log(posts.length);
+          getPosts(err, res, resolve);
+        }
       });
     }).then(function(posts) {
       // console.log('is this happnening?', posts)
