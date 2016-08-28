@@ -2,14 +2,17 @@ angular.module('app.fb', [])
 
 .controller('fbCtrl', function ($scope, $http) {
   $scope.csvData = [];
+  $scope.loading = false;
 
   $scope.getFBPage = function() {
+    $scope.loading = true;
     $http.post('/fb', {
       'fbPage': $scope.fbPage
     }).then(function(resp) {
       console.log(resp);
       $scope.posts = resp.data;
       formatCSV($scope.posts);
+      $scope.loading = false;
     }, function(resp) {
       alert('error getting page');
     });

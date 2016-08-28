@@ -7,7 +7,9 @@ var conf = {
   client_id: '315720118774609',
   client_secret: 'c4cad02829ff4a9ac6f8d79454059cfe',
   scope: 'email, public_profile, user_friends',
-  redirect_uri: 'https://search-twitter-timeline.herokuapp.com/#/facebook'
+  redirect_uri: 'https://search-twitter-timeline.herokuapp.com/auth/facebook'
+  // redirect_uri: 'http://localhost:9000/auth/facebook'
+
 };
 
 
@@ -47,6 +49,7 @@ module.exports =  function(app, express, io) {
   });
 
   app.get('/auth/facebook', function(req, res) {
+    console.log('req.query.code', req.query.code);
 
     // we don't have a code yet
     // so we'll redirect to the oauth dialog
@@ -80,7 +83,5 @@ module.exports =  function(app, express, io) {
     });
   });
 
-  app.post('/fb', function(req,res,next){
-    controller.fb(req,res, graph);
-  });
+  app.post('/fb', controller.fb);
 }

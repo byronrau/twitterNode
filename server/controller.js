@@ -12,7 +12,7 @@ var client = new Twitter({
 
 var prevStream;
 
-// var graph = require('fbgraph');
+var graph = require('fbgraph');
 
 
 module.exports = {
