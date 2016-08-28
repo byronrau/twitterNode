@@ -16,6 +16,9 @@
       <a class="navbar-text" href="#/usershow">
         User
       </a>
+      <a class="navbar-text" href="#/facebook">
+        Facebook
+      </a>
     </div>
   </div>
 </nav>
@@ -23,20 +26,20 @@
 
 <h5>This form uses Facebook API. Enter the URL of the page and it will return each post and all comments for that post.<a href="https://www.facebook.com" target="_blank">  For more detail see here.</a></h5>
 
-<h3>Authenticate with Facebook first</h3>
+<!-- <h3>Authenticate with Facebook first</h3> -->
 
-<a href="http://localhost:9000/auth/facebook"><button class="btn btn-lg" ng-click=>Click here to Authenticate with Facebook</button></a>
+<a href="http://localhost:9000/auth/facebook"><button class="btn btn-lg" ng-click=>Click here first to Authenticate with Facebook</button></a>
 
 <div class="form-container">
 <form class="navbar-form" role="search">
   <div class="form-group">
-    <input type="text" class="form-control" placeholder="url of Facebook Page" ng-model="fbPage" autocomplete="on">
+    <input type="text" class="form-control" placeholder="url of Facebook Page (no trainling slash)" ng-model="fbPage" autocomplete="on" style="width:300px">
   </div>
   <button type="submit" class="btn btn-default" ng-click=getFBPage() ng-disabled="loading">
-  <span ng-hide="loading">Submit</span>
-  <span ng-show="loading"><i class="fa fa-spinner fa-spin"></i> Getting Page...</span>
+    <span ng-hide="loading">Submit</span>
+    <span ng-show="loading"><i class="fa fa-spinner fa-spin"></i> Getting Page...</span>
   </button>
-  <!-- <button type="button" class="btn btn-default" csv-header="['Created', 'Id', 'text', 'user', 'favorite_count', 'favorited', 'retweet_count', 'retweeted']" ng-csv="results" filename="test.csv">Export</button> -->
+  <button type="button" class="btn btn-default" csv-header="['id', 'create_time', 'message', 'type', 'name']" ng-csv="csvData" filename="test.csv">Export</button>
 </form>
 </div>
 <div class="tweets-container">

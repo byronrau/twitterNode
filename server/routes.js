@@ -73,7 +73,9 @@ module.exports =  function(app, express, io) {
       , "client_secret":  conf.client_secret
       , "code":           req.query.code
     }, function (err, facebookRes) {
+      console.log('facebookRes!', facebookRes);
       req.isAuthenticated();
+      console.log('req',req);
       res.redirect('/#/facebook');
     });
   });

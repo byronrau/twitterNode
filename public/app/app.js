@@ -42,7 +42,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
       controller: 'fbCtrl'
       // authenticate: true
     })
-  $urlRouterProvider.otherwise('/');
+  $urlRouterProvider.otherwise('/signin');
 });
 
 app.run(function ($rootScope, $state, Auth) {
