@@ -76,7 +76,7 @@ module.exports =  function(app, express, io) {
       console.log('facebookRes!', facebookRes);
       req.isAuthenticated();
       console.log('req',req);
-      res.redirect('https://search-twitter-timeline.herokuapp.com/#/facebook');
+      res.redirect('/#/facebook');
     });
   });
 
