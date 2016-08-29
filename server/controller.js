@@ -184,7 +184,7 @@ module.exports = {
 
     var getPosts = function(err, res, resolve) {
       count++
-      if(res.paging && res.paging.previous && count<2) {
+      if(res.paging && res.paging.previous /*&& count<2*/) {
         // console.log('calling me', res.paging.previous)
         graph.get(res.paging.next, function(err, res){
           // console.log('inside recursive grah.get', res);
