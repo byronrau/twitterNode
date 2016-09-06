@@ -259,7 +259,9 @@ module.exports = {
         console.log('err', err);
       })
     }).catch(function(err) {
-      res.status(500).send(err);
+      console.log('error getting comments form one of the posts');
+      res.send(posts);
+      // res.status(500).send(err);
     })
   }
 }
