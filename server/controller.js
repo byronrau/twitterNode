@@ -1,6 +1,6 @@
 var Twitter = require('twitter');
 //remove for production
-// var keys = require('./config.js');
+var keys = require('./config.js');
 var sentiment = require('sentiment');
 
 var client = new Twitter({
@@ -179,12 +179,15 @@ module.exports = {
     var posts = [];
     var count = 0;
 
+    //maybe refactor to just use posts?fields=message,likes.limit(1).summary(true),comments.limit(1000)
+
     var pageURL = req.body.fbPage.split('/').slice(-1)[0];
+    var until = req.body.until;
     // console.log('/'+ pageURL + '/posts');
 
     var getPosts = function(err, res, resolve) {
       count++
-      if(res.paging && res.paging.previous /*&& count<2*/) {
+      if(res.paging && res.paging.previous && count<40) {
         // console.log('calling me', res.paging.previous)
         graph.get(res.paging.next, function(err, res){
           // console.log('inside recursive grah.get', res);
@@ -192,7 +195,7 @@ module.exports = {
             console.log('err', err);
           } else {
             posts = posts.concat(res.data);
-            console.log('total posts', posts.length);
+            // console.log('total posts', posts.length);
             // console.log('paging inside recursive graph',res);
             getPosts(err, res, resolve);
           }
@@ -205,13 +208,13 @@ module.exports = {
     }
 
     var getComments = function(post) {
-      return new Promise(function(resolve, reject){
-        graph.get(post.id + '/comments?limit=500', function(err, res){
+      return new Promise(function(resolve, reject) {
+        graph.get(post.id + '/comments?limit=1000', function(err, res){
           if(err) {
-            console.log('err getting comments')
+            console.log('err getting comments', post.id, err)
             reject(err);
           } else {
-            console.log('sending comments ', res.data.length);
+            // console.log('sending comments ', res.data.length);
             post.comments = res.data;
             resolve(post);
           }
@@ -219,10 +222,16 @@ module.exports = {
       })
     }
 
-    console.log('graph in controller', graph);
+    // console.log('graph in controller', graph);
 
     var p1 = new Promise(function(resolve, reject) {
-      graph.get('/' + pageURL + '/posts', function(err, res) {
+      var postStr = '';
+      if (until) {
+        postStr = '/' + pageURL + '/posts' + '?until=' + until;
+      } else {
+        postStr = '/' + pageURL + '/posts';
+      }
+      graph.get(postStr, function(err, res) {
         if (err) {
           console.log('Error getting initial posts', err)
           // res.status(500).send(err)
@@ -242,10 +251,14 @@ module.exports = {
         promiseArr.push(getComments(currPost));
       });
       console.log('promiseArr', promiseArr);
-      Promise.all(promiseArr).then(function(values){
+      Promise.all(promiseArr)
+      .then(function(values) {
         res.send(posts);
-      });
-    }).catch(function(err){
+      }).catch(function(err) {
+        // res.status(500).send(err);
+        console.log('err', err);
+      })
+    }).catch(function(err) {
       res.status(500).send(err);
     })
   }

@@ -7,14 +7,16 @@ angular.module('app.fb', [])
   $scope.getFBPage = function() {
     $scope.loading = true;
     $http.post('/fb', {
-      'fbPage': $scope.fbPage
+      'fbPage': $scope.fbPage,
+      'until': $scope.until
     }).then(function(resp) {
       console.log(resp);
       $scope.posts = resp.data;
       formatCSV($scope.posts);
       $scope.loading = false;
-    }, function(resp) {
+    }, function(err) {
       alert('error getting page');
+      console.log(err)
     });
   };
 
