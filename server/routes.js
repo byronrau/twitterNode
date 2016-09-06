@@ -7,7 +7,7 @@ var conf = {
   client_id: '315720118774609',
   client_secret: 'c4cad02829ff4a9ac6f8d79454059cfe',
   scope: 'email, public_profile, user_friends',
-  redirect_uri: 'https://search-twitter-timeline.herokuapp.com/auth/facebook'
+  redirect_uri: 'http://social-node.herokuapp.com/auth/facebook'
   // redirect_uri: 'http://localhost:9000/auth/facebook'
 
 };
