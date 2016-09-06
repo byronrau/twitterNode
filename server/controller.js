@@ -1,6 +1,6 @@
 var Twitter = require('twitter');
 //remove for production
-var keys = require('./config.js');
+// var keys = require('./config.js');
 var sentiment = require('sentiment');
 
 var client = new Twitter({
