@@ -1,6 +1,6 @@
 var Twitter = require('twitter');
 //remove for production
-// var keys = require('./config.js');
+var keys = require('./config.js');
 var sentiment = require('sentiment');
 
 var client = new Twitter({
@@ -179,7 +179,8 @@ module.exports = {
     var posts = [];
     var count = 0;
 
-    //maybe refactor to just use posts?fields=message,likes.limit(1).summary(true),comments.limit(1000)
+    //maybe refactor to just use
+    //http://stackoverflow.com/questions/17755753/how-to-get-likes-count-when-searching-facebook-graph-api-with-search-xxx
 
     var pageURL = req.body.fbPage.split('/').slice(-1)[0];
     var until = req.body.until;
@@ -255,13 +256,11 @@ module.exports = {
       .then(function(values) {
         res.send(posts);
       }).catch(function(err) {
-        // res.status(500).send(err);
         console.log('err', err);
+        res.status(500).send(err);
       })
     }).catch(function(err) {
-      console.log('error getting comments form one of the posts');
-      res.send(posts);
-      // res.status(500).send(err);
+      res.status(500).send(err);
     })
   }
 }
