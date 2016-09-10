@@ -1,7 +1,7 @@
 {
-  "name": "twitter-node",
+  "name": "social-node",
   "version": "1.0.0",
-  "description": "A simple twitter client for node",
+  "description": "A simple social network API client for node",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
