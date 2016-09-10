@@ -4,8 +4,16 @@ angular.module('app.fb', [])
   $scope.csvData = [];
   $scope.loading = false;
 
+
   $scope.getFBPage = function() {
     $scope.loading = true;
+
+    //trim trailing slash
+    // var strArr = $scope.fbPage.split('');
+    if ($scope.fbPage.slice(-1) === '/') {
+      $scope.fbPage = $scope.fbPage.split('').slice(0,-1).join('');
+      // console.log($scope.fbPage);
+    }
     $http.post('/fb', {
       'fbPage': $scope.fbPage,
       'until': $scope.until
@@ -15,7 +23,8 @@ angular.module('app.fb', [])
       formatCSV($scope.posts);
       $scope.loading = false;
     }, function(err) {
-      alert('error getting page');
+      alert('error getting page: ' + err.data.message);
+      $scope.loading = false;
       console.log(err)
     });
   };
@@ -32,17 +41,24 @@ angular.module('app.fb', [])
       post.message = currPost.message;
       post.type = 'Post';
       post.name = 'Posted by Page';
+      post.likes = currPost.likes.summary.total_count;
+      if (currPost.hasOwnProperty('shares')) {
+        post.shares = currPost.shares.count;
+      } else {
+        post.shares = 0
+      }
       $scope.csvData.push(post);
 
       // console.log(currPost.message);
 
-      currPost.comments.forEach(function(comment) {
+      currPost.comments.data.forEach(function(comment) {
         var comm = {};
         comm.id = comment.id;
         comm.created_time = comment.created_time;
         comm.message = comment.message;
         comm.type = 'Comment';
         comm.name = comment.from.name;
+        comm.likes = comment.likes.summary.total_count;
         $scope.csvData.push(comm);
       });
     });

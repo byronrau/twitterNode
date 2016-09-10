@@ -61,6 +61,7 @@ module.exports =  function(app, express, io) {
       });
 
       if (!req.query.error) { //checks whether a user denied the app facebook login/permissions
+        // req.user = req.query.code;
         res.redirect(authUrl);
       } else {  //req.query.error == 'access_denied'
         res.send('access denied');

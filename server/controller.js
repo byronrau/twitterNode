@@ -1,6 +1,6 @@
 var Twitter = require('twitter');
 //remove for production
-var keys = require('./config.js');
+// var keys = require('./config.js');
 var sentiment = require('sentiment');
 
 var client = new Twitter({
@@ -179,88 +179,51 @@ module.exports = {
     var posts = [];
     var count = 0;
 
-    //maybe refactor to just use
     //http://stackoverflow.com/questions/17755753/how-to-get-likes-count-when-searching-facebook-graph-api-with-search-xxx
+    //AmericanWomenVeterans/feed?fields=message,comments.summary(true){message,from,likes.limit(0).summary(true)},likes.limit(1).summary(true),shares
 
     var pageURL = req.body.fbPage.split('/').slice(-1)[0];
     var until = req.body.until;
-    // console.log('/'+ pageURL + '/posts');
 
-    var getPosts = function(err, res, resolve) {
+    var getPosts = function(err, result) {
       count++
-      if(res.paging && res.paging.previous && count<40) {
-        // console.log('calling me', res.paging.previous)
-        graph.get(res.paging.next, function(err, res){
-          // console.log('inside recursive grah.get', res);
+      if(result.paging && result.paging.previous && count<40) {
+        // console.log('calling me', result.paging.previous)
+        graph.get(result.paging.next, function(err, resultult){
+          // console.log('inside recursive grah.get', result);
           if(err) {
             console.log('err', err);
           } else {
-            posts = posts.concat(res.data);
-            // console.log('total posts', posts.length);
-            // console.log('paging inside recursive graph',res);
-            getPosts(err, res, resolve);
+            posts = posts.concat(result.data);
+            console.log('total posts', posts.length);
+            // console.log('paging inside recursive graph',result);
+            getPosts(err, result);
           }
         })
       } else {
         // console.log('exiting', count);
-        resolve(posts);
+        res.send(posts);
         return;
       }
+    };
+
+    var postsStr = '';
+
+    if (until) {
+      postStr = '/' + pageURL + '/feed?fields=message,comments.summary(true){message,from,likes.limit(0).summary(true),created_time},likes.limit(1).summary(true),shares,created_time' + '?until=' + until;
+    } else {
+      postStr = '/' + pageURL + '/feed?fields=message,comments.summary(true){message,from,likes.limit(0).summary(true),created_time},likes.limit(1).summary(true),shares,created_time';
     }
 
-    var getComments = function(post) {
-      return new Promise(function(resolve, reject) {
-        graph.get(post.id + '/comments?limit=1000', function(err, res){
-          if(err) {
-            console.log('err getting comments', post.id, err)
-            reject(err);
-          } else {
-            // console.log('sending comments ', res.data.length);
-            post.comments = res.data;
-            resolve(post);
-          }
-        });
-      })
-    }
-
-    // console.log('graph in controller', graph);
-
-    var p1 = new Promise(function(resolve, reject) {
-      var postStr = '';
-      if (until) {
-        postStr = '/' + pageURL + '/posts' + '?until=' + until;
+    graph.get(postStr, function(err, result) {
+      if (err) {
+        console.log('Error getting initial posts', err)
+        res.status(500).send(err)
       } else {
-        postStr = '/' + pageURL + '/posts';
+        posts = posts.concat(result.data);
+        console.log(posts.length);
+        getPosts(err, result);
       }
-      graph.get(postStr, function(err, res) {
-        if (err) {
-          console.log('Error getting initial posts', err)
-          // res.status(500).send(err)
-          reject(err);
-        } else {
-          // console.log(res);
-          // res.send('OK');
-          posts = posts.concat(res.data);
-          // console.log(posts.length);
-          getPosts(err, res, resolve);
-        }
-      });
-    }).then(function(posts) {
-      // console.log('is this happnening?', posts)
-      var promiseArr = [];
-      posts.forEach(function(currPost){
-        promiseArr.push(getComments(currPost));
-      });
-      console.log('promiseArr', promiseArr);
-      Promise.all(promiseArr)
-      .then(function(values) {
-        res.send(posts);
-      }).catch(function(err) {
-        console.log('err', err);
-        res.status(500).send(err);
-      })
-    }).catch(function(err) {
-      res.status(500).send(err);
-    })
+    });
   }
 }
