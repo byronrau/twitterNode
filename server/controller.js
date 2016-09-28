@@ -2,6 +2,7 @@ var Twitter = require('twitter');
 //remove for production
 // var keys = require('./config.js');
 var sentiment = require('sentiment');
+var moment = require('moment')
 
 var client = new Twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY || keys.TWITTER_CONSUMER_KEY,
@@ -184,6 +185,7 @@ module.exports = {
 
     var pageURL = req.body.fbPage.split('/').slice(-1)[0];
     var until = req.body.until;
+    var untilTime = moment(until).unix()
 
     var getPosts = function(err, result) {
       count++
@@ -211,7 +213,7 @@ module.exports = {
     var postsStr = '';
 
     if (until) {
-      postStr = '/' + pageURL + '/feed?fields=message,comments.summary(true){message,from,likes.limit(0).summary(true),created_time},likes.limit(1).summary(true),shares,created_time' + '?until=' + until;
+      postStr = '/' + pageURL + '/feed?fields=message,comments.summary(true){message,from,likes.limit(0).summary(true),created_time},likes.limit(1).summary(true),shares,created_time' + '&until=' + untilTime;
     } else {
       postStr = '/' + pageURL + '/feed?fields=message,comments.summary(true){message,from,likes.limit(0).summary(true),created_time},likes.limit(1).summary(true),shares,created_time';
     }
