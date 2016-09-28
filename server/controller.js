@@ -190,7 +190,7 @@ module.exports = {
     var getPosts = function(err, result) {
       count++
       //request to fb api takes longer than 30 secs which times out on free Heroku for count > 20
-      if(result.paging && result.paging.previous && count<15) {
+      if(result.paging && result.paging.previous && count<10) {
         // console.log('calling me', result.paging.previous)
         graph.get(result.paging.next, function(err, resultult){
           // console.log('inside recursive grah.get', result);
