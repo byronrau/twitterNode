@@ -23,9 +23,13 @@ angular.module('app.fb', [])
       formatCSV($scope.posts);
       $scope.loading = false;
     }, function(err) {
-      alert('error getting page: ' + err.data.message);
-      $scope.loading = false;
+      try{
+        alert('error getting page: ' + err.data.message);
+      } catch(e) {
+        console.log(e)
+      }
       console.log(err)
+      $scope.loading = false;
     });
   };
 
@@ -38,10 +42,16 @@ angular.module('app.fb', [])
       var post = {}
       post.id = currPost.id;
       post.created_time = currPost.created_time;
-      post.message = currPost.message;
+      try {
+        post.message = currPost.message;
+      } catch (e) {
+      }
       post.type = 'Post';
       post.name = 'Posted by Page';
-      post.likes = currPost.likes.summary.total_count;
+      try {
+        post.likes = currPost.likes.summary.total_count;
+      } catch(e) {
+      }
       if (currPost.hasOwnProperty('shares')) {
         post.shares = currPost.shares.count;
       } else {

@@ -6,8 +6,14 @@ angular.module('app.search', [])
   $scope.loading = false;
   $scope.sortType = '';
   $scope.sortReverse = false;
+
+  $scope.clear = function() {
+    $scope.results = [];
+  };
+
   $scope.search = function() {
     $scope.loading = true;
+    $scope.results = [];
     $http.post('/search', {
       'searchTerm': $scope.searchTerm,
       'maxId': $scope.maxId
@@ -28,7 +34,8 @@ angular.module('app.search', [])
         extract.sentiment = tweet.sentiment.score;
         tempArr.push(extract);
       });
-      $scope.results = $scope.results.concat(tempArr);
+      // $scope.results = $scope.results.concat(tempArr);
+      $scope.results = tempArr;
       console.log($scope.results);
     }, function(err){
       alert('Error getting data, please try again.')

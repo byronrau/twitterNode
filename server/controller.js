@@ -1,8 +1,11 @@
 var Twitter = require('twitter');
 //remove for production
-// var keys = require('./config.js');
+var keys = require('./config.js');
+
 var sentiment = require('sentiment');
-var moment = require('moment')
+var moment = require('moment');
+var csvWriter = require('csv-write-stream');
+var fs = require('fs');
 
 var client = new Twitter({
   consumer_key: process.env.TWITTER_CONSUMER_KEY || keys.TWITTER_CONSUMER_KEY,
@@ -15,8 +18,111 @@ var prevStream;
 
 var graph = require('fbgraph');
 
+var writeCSV = function(tweetsArr, user) {
+    var writer = csvWriter({ headers: ['Tweet ID','Username','Tweet Time','Tweet','Number of Retweets','Hashtags','Mentions','Name','Location','Web','Bio','Number of Tweets','Number of Followers','Number Following','Location Coordinates']})
+    writer.pipe(fs.createWriteStream('tweets.csv', {'flags': 'a'}));
+    tweetsArr.forEach(function(currTweet){
+      // console.log(JSON.stringify(currTweet));
+      var hashtagsStr = '';
+      var userMentionsStr = '';
+      if(currTweet.entities.hashtags.length > 0) {
+        currTweet.entities.hashtags.forEach(function(currHash, index) {
+          if(index !== currTweet.entities.hashtags.length-1) {
+            hashtagsStr += currHash.text + ','
+          } else {
+            hashtagsStr += currHash.text
+          }
+          hashtagsStr += currHash.text + ','
+        });
+        hashtagsStr = '\"' + hashtagsStr + '\"'
+      }
+      if(currTweet.entities.user_mentions.length > 0) {
+        currTweet.entities.user_mentions.forEach(function(currMention, index) {
+          if(index !== currTweet.entities.user_mentions.length-1) {
+            userMentionsStr += currMention.screen_name + ','
+          } else {
+            userMentionsStr += currMention.screen_name
+          }
+        });
+        userMentionsStr = '\"' + userMentionsStr + '\"'
+      }
+      writer.write([currTweet.id_str, currTweet.user.screen_name,currTweet.created_at, currTweet.text, currTweet.retweet_count, hashtagsStr, userMentionsStr, currTweet.user.name, currTweet.user.location, currTweet.user.url, currTweet.user.description, currTweet.user.statuses_count, currTweet.user.followers_count, currTweet.user.friends_count])
+    });
+    writer.end()
+  }
+
+var writeFBCSV = function(posts) {
+  console.log('Writing FBCSV', posts.length);
+  //array of posts, with comments as array of objects, need to flatten
+  //id, created_time, message, type(post/comment), name
+  //id, created_time, message, type(post/comment), name
+  var csvData = [];
+  posts.forEach(function(currPost){
+    // console.log('currPost', currPost)
+    var post = {}
+    post.id = currPost.id;
+    post.created_time = currPost.created_time;
+    try {
+      post.message = currPost.message.trim();
+    } catch (e){
+      // console.log(e)
+      post.messge ='';
+    }
+    post.type = 'Post';
+    post.name = 'Posted by Page';
+    try {
+      post.likes = currPost.likes.summary.total_count;
+    } catch(e) {
+      post.likes = 0;
+    }
+    if (currPost.hasOwnProperty('shares')) {
+      post.shares = currPost.shares.count;
+    } else {
+      post.shares = 0
+    }
+    csvData.push(post);
+
+    // console.log(currPost.message);
+    if(currPost.hasOwnProperty('comments')) {
+      if (currPost.comments.hasOwnProperty('data')) {
+        currPost.comments.data.forEach(function(comment) {
+          var comm = {};
+          comm.id = comment.id;
+          comm.created_time = comment.created_time;
+          try {
+            comm.message = comment.message.trim();
+          } catch(e){
+            comm.message = '';
+          }
+          comm.type = 'Comment';
+          comm.name = comment.from.name;
+          try {
+            comm.likes = comment.likes.summary.total_count;
+          } catch (e) {
+            comm.likes = 0;
+          }
+          if (comment.hasOwnProperty('shares')) {
+            comm.shares = comment.shares.count;
+          } else {
+            comm.shares = 0
+          }
+          csvData.push(comm);
+        });
+      }
+    }
+  });
+  var writer = csvWriter({ headers: ['Id','created_time','message','type','name','likes','shares']})
+  var dateStr = moment().format('MM-DD-YY-HH-mm-ss')
+  writer.pipe(fs.createWriteStream('posts-' +dateStr+ '.csv', {'flags': 'a'}));
+  csvData.forEach(function(currPost){
+    writer.write([currPost.id, currPost.created_time,currPost.message,currPost.type,currPost.name,currPost.likes,currPost.shares])
+  })
+  writer.end()
+}
 
 module.exports = {
+
+
   timeline: function(req, res) {
     var tweetsArr = [];
     var count = 0;
@@ -26,9 +132,19 @@ module.exports = {
       count: 200
     };
 
+    var content = fs.readFileSync('input.csv', 'utf-8');
+    var usersArr = [];
+    content.toString().split(/\n/).forEach(function(line, index){
+      // do something here with each line
+      console.log(index, line)
+      usersArr.push(line.trim());
+    });
+
     var nextTweets = function(params) {
-      console.log('count', count, 'max_id', params.max_id);
-      if(count === 16) {
+      console.log('count', count, 'max_id', params.max_id, 'params', params);
+      if(count === 90 || (moment(tweetsArr[tweetsArr.length-1].created_at) < moment("20160101", "YYYYMMDD")) || (tweetsArr[tweetsArr.length-1].id == tweetsArr[tweetsArr.length-2].id) ) {
+        //write to file
+        writeCSV(tweetsArr, params.screen_name);
         res.send(tweetsArr);
         return;
       }
@@ -43,7 +159,7 @@ module.exports = {
         tweetsArr = tweetsArr.concat(tweets);
         count++;
         nextTweets(params);
-      } else{
+      } else {
         console.log('error')
         res.status(404).send(error);
       }
@@ -51,19 +167,26 @@ module.exports = {
     }
 
     var getTweets = function() {
-      client.get('statuses/user_timeline', params, function(error, tweets, response){
-        // console.log(tweets)
+      client.get('users/show', {screen_name: params.screen_name}, function(error, user, response) {
         if (!error) {
-          params.max_id = tweets[tweets.length-1].id;
-          tweetsArr = tweetsArr.concat(tweets);
-          nextTweets(params);
+          client.get('statuses/user_timeline', params, function(error, tweets, response) {
+            console.log('tweets',tweets);
+            if (!error) {
+              params.max_id = tweets[tweets.length-1].id;
+              tweetsArr = tweetsArr.concat(tweets);
+              nextTweets(params);
+            } else {
+              console.log('error', error)
+              res.status(404).send(error);
+            }
+          });
+          // res.send(user);
         } else{
-          console.log('error')
+          console.log('error', error)
           res.status(404).send(error);
         }
       });
     }
-
     getTweets();
   },
 
@@ -190,9 +313,9 @@ module.exports = {
     var getPosts = function(err, result) {
       count++
       //request to fb api takes longer than 30 secs which times out on free Heroku for count > 20
-      if(result.paging && result.paging.previous && count<10) {
+      if(result.paging && result.paging.previous && count<300) {
         // console.log('calling me', result.paging.previous)
-        graph.get(result.paging.next, function(err, resultult){
+        graph.get(result.paging.next, function(err, result){
           // console.log('inside recursive grah.get', result);
           if(err) {
             console.log('err', err);
@@ -205,8 +328,11 @@ module.exports = {
         })
       } else {
         // console.log('exiting', count);
+        console.log('total posts exiting', posts.length);
         res.send(posts);
-        return;
+        // console.log(posts);
+        writeFBCSV(posts);
+        return
       }
     };
 
@@ -225,7 +351,7 @@ module.exports = {
       } else {
         posts = posts.concat(result.data);
         console.log(posts.length);
-        getPosts(err, result);
+        getPosts(err, result)
       }
     });
   }

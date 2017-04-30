@@ -60,6 +60,12 @@ app.controller('ntCtrl', ['$scope', '$http', function($scope, $http) {
   $scope.loading = false;
   $scope.sortType = '';
   $scope.sortReverse = false;
+
+  $scope.clear = function() {
+    $scope.results = [];
+  };
+
+
   $scope.timeline = function() {
     $scope.loading = true;
     $http.post('/timeline', {
@@ -80,7 +86,7 @@ app.controller('ntCtrl', ['$scope', '$http', function($scope, $http) {
         extract.retweeted = currItem.retweeted;
         tempArr.push(extract);
       });
-      $scope.results = $scope.results.concat(tempArr);
+      $scope.results = tempArr;
     }, function(err){
       alert('Error getting data, please try again.')
       $scope.loading = false;

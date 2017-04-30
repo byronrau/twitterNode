@@ -36,6 +36,8 @@
   <span ng-show="loading"><i class="fa fa-spinner fa-spin"></i> Getting Tweets...</span>
   </button>
   <button type="button" class="btn btn-default" csv-header="['Created', 'Id', 'text', 'user', 'favorite_count', 'favorited', 'retweet_count', 'retweeted']" ng-csv="results" filename="test.csv">Export</button>
+  <button type="button" class="btn btn-default" ng-click="clear()"></button>
+
 </form>
 </div>
 <div class="tweets-container">

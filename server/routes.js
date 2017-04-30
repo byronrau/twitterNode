@@ -7,8 +7,8 @@ var conf = {
   client_id: '315720118774609',
   client_secret: 'c4cad02829ff4a9ac6f8d79454059cfe',
   scope: 'email, public_profile, user_friends',
-  redirect_uri: 'http://social-node.herokuapp.com/auth/facebook'
-  // redirect_uri: 'http://localhost:9000/auth/facebook'
+  // redirect_uri: 'http://social-node.herokuapp.com/auth/facebook'
+  redirect_uri: 'http://localhost:9000/auth/facebook'
 
 };
 
@@ -60,7 +60,8 @@ module.exports =  function(app, express, io) {
         , "scope":         conf.scope
       });
 
-      if (!req.query.error) { //checks whether a user denied the app facebook login/permissions
+      if (!req.query.error) { 
+        //checks whether a user denied the app facebook login/permissions
         // req.user = req.query.code;
         res.redirect(authUrl);
       } else {  //req.query.error == 'access_denied'
