@@ -30,7 +30,7 @@
     "passport-local-mongoose": "^4.0.0",
     "password": "^0.1.1",
     "sentiment": "^1.0.6",
-    "socket.io": "^1.7.3",
+    "socket.io": "^2.4.0",
     "twitter": "^1.7.0"
   }
 }
