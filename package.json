@@ -23,7 +23,7 @@
     "fbgraph": "^1.4.1",
     "method-override": "^2.3.5",
     "moment": "^2.18.1",
-    "mongoose": "^4.9.6",
+    "mongoose": "^5.7.5",
     "morgan": "^1.8.1",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
